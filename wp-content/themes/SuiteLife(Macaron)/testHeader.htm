@@ -1,10 +1,61 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Untitled Document</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>SuiteLife</title>
+    <style>
+		@import url(http://weloveiconfonts.com/api/?family=fontawesome);
+		[class*="fontawesome-"]:before{
+			font-family: 'fontawesome', sans-serif;		  
+		}		
+		#wrapper{
+			border: 2px solid #000;
+			height: 600px;
+			width: 100%;
+			min-width: 10cm;
+			max-width: 16cm;
+			background: #999;	
+		}
+		#header{
+			background: #fff;
+			position: relative;
+			height: 95px;
+		}
+		#home{
+			display: block;
+			height: 100%;
+			max-width: 20em;
+			text-align: center;
+			line-height: 10.1em; 
+		}
+		#home img{
+			width: 90%;
+		}
+		#app-bar{
+			height: 100%;
+			width: 18%;
+			position: absolute;
+			top: 0;
+			right: 0;
+			font-size: 4em;
+			line-height: 1.5em;
+			color: #5D5D5D;	
+			text-align: center;
+			cursor: pointer;
+		}
+	</style>
 </head>
 
-<body>
-</body>
+    <body>
+        <div id='wrapper'>
+            <div id='header'>
+            	<a id='home' href='#'><img src='images/SuiteLifeLogoMobile.png' /></a>
+            	<span id='app-bar' class='fontawesome-reorder'></span>
+            </div>
+            <div id='mainarea'></div>
+            <div id='secondaryarea'></div>
+            <div id='footer'></div>
+        </div>
+    </body>
 </html>
