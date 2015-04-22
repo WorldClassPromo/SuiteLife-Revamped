@@ -1,15 +1,116 @@
 <!doctype html>
 <html>
-<head>
-<meta charset="utf-8">
-<title>Document sans nom</title>
-<link rel="stylesheet" href="style2.css"/>
-</head>
-
-<body>
-			<div id="nav">
+    <head>
+        <meta charset="utf-8">
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <title>SuiteLife 2</title>
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,800italic,700italic,600italic,400italic,300italic,800,700,600,300' rel='stylesheet' type='text/css'>
+        <style>
+        	/*GENERAL*/
+			
+			body{
+				width:100%;
+				min-height:100%;
+				margin:0;
+				padding:0;
+				font-family:'Open Sans', 'Arial', sans-serif;
+				font-weight:300;
+				font-size:18px;
+				color:#5D5D5D;
+				text-align:justify;
+				line-height:28px;
+			}
+			
+			ul li{
+				list-style:none;
+			}
+			
+			h1{
+				color:#6BBBB3;
+				font-weight:800;
+			}
+			
+			a{
+				text-decoration:none;
+				color:#6BBBB3;
+			}
+			
+			/*NAVIGATION*/
+			
+			#nav{
+				position:fixed;
+				top:0;
+				width:100%;
+				height:65px;
+				background:white;
+				border-bottom:1px solid #E8E8E8;
+			}
+			
+			#logo{
+				padding-top:0.5em;
+				padding-left:0.5em;
+				width:10em;
+			}
+			
+			.show-menu {
+				display:block;
+				float:right;
+				padding:0.3em 0.2em;
+				font-size:60px;
+			}
+			
+			ul {
+				position:static;
+				display:none;	
+				margin:0;
+				padding:0;
+			}
+			
+			ul li, li a {
+				display:block;
+				float:left;
+				width:100%;
+				padding:0.2em 0.5em;
+				background:#5D5D5D;
+				color:white;
+				font-size:20px;
+			}
+			
+			a:hover {
+				color:#6BBBB3;
+			}
+			
+			ul li a:hover + .hidden, .hidden:hover {
+				display:block;
+				background:grey;
+			}
+			
+			input[type=checkbox]{
+				display:none;
+			}
+			
+			input[type=checkbox]:checked ~ #menu{
+				display:block;
+			}
+			
+			@media (min-width: 500px) and (max-width: 999px){
+  				#nav{ 
+					background:red; 
+				}
+			}
+			
+			@media (min-width: 1000px){
+  				#nav{ 
+					background:blue; 
+				}
+			}
+        </style>
+    </head>
+    
+    <body>
+		<div id="nav">
 			<a href="#"><img src="images/SuiteLifeLogoMobile.png" alt="logo" id="logo"></a>
-			<label for="show-menu" class="show-menu"><img src="img/hamburger.png" alt="navigation" class="hamburger"></label>
+			<label for="show-menu" class="show-menu">&#8801;</label>
 			<input type="checkbox" id="show-menu" role="button">
 				<ul id="menu">
 					<li><a href="#">Real Estate</a>
@@ -39,5 +140,5 @@
 					<li><a href="#">Contact</a></li>
 				</ul>
 		</div>
-</body>
+	</body>
 </html>
