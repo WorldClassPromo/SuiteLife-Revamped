@@ -7,7 +7,6 @@
         <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,800italic,700italic,600italic,400italic,300italic,800,700,600,300' rel='stylesheet' type='text/css'>
         <style>
         	/*GENERAL*/
-			
 			body{
 				width:100%;
 				min-height:100%;
@@ -20,23 +19,18 @@
 				text-align:justify;
 				line-height:28px;
 			}
-			
 			ul li{
 				list-style:none;
 			}
-			
 			h1{
 				color:#6BBBB3;
 				font-weight:800;
 			}
-			
 			a{
 				text-decoration:none;
 				color:#6BBBB3;
 			}
-			
 			/*NAVIGATION*/
-			
 			#nav{
 				position:fixed;
 				top:0;
@@ -45,28 +39,25 @@
 				background:white;
 				border-bottom:1px solid #E8E8E8;
 			}
-			
 			#logo{
 				padding-top:0.5em;
 				padding-left:0.5em;
 				width:10em;
 			}
-			
-			.show-menu {
+			.show-menu{
 				display:block;
 				float:right;
 				padding:0.3em 0.2em;
 				font-size:60px;
 			}
-			
-			ul {
+			ul{
 				position:static;
 				display:none;	
 				margin:0;
 				padding:0;
 			}
-			
-			ul li, li a {
+			ul li, 
+			li a{
 				display:block;
 				float:left;
 				width:100%;
@@ -75,33 +66,42 @@
 				color:white;
 				font-size:20px;
 			}
-			
-			a:hover {
+			a:hover{
 				color:#6BBBB3;
 			}
-			
-			ul li a:hover + .hidden, .hidden:hover {
+			ul li a:hover + .hidden, .hidden:hover{
 				display:block;
 				background:grey;
 			}
-			
-			input[type=checkbox]{
+			input[type=checkox]{
 				display:none;
 			}
-			
 			input[type=checkbox]:checked ~ #menu{
 				display:block;
 			}
-			
 			@media (min-width: 500px) and (max-width: 999px){
   				#nav{ 
 					background:red; 
 				}
-			}
-			
+			}	
 			@media (min-width: 1000px){
   				#nav{ 
-					background:blue; 
+					/* background:blue; */
+				}
+				#nav ul li{
+					width: auto;	
+				}
+				#nav li,
+				#nav a{
+					color: #5D5D5D;
+					background: #fff;
+				}
+				#menu{
+					border: 1px dotted #000;
+					width: 1000px;
+					position: absolute;
+					top: 20px;
+					right: 0;
 				}
 			}
         </style>

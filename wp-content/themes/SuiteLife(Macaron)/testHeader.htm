@@ -6,6 +6,7 @@
     <title>SuiteLife</title>
     <style>
 		@import url(http://weloveiconfonts.com/api/?family=fontawesome);
+		@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300);
 		[class*="fontawesome-"]:before{
 			font-family: 'fontawesome', sans-serif;		  
 		}
@@ -14,34 +15,37 @@
 			margin: 0;
 			padding: 0;	
 		}
+		body{
+			font-family: 'Open Sans', sans-serif;
+			font-weight: 300;
+			letter-spacing: 1px;
+		}
 		#wrapper{
-			border: 2px solid #000;
+			border: 1px solid #999;
 			height: 600px;
 			width: 100%;
 			min-width: 6.5cm;
-			max-width: 16.5cm;
 			background: #999;	
 		}
 		#header{
 			background: #fff;
 			position: relative;
-			height: 95px;
+			height: 65px;
 		}
 		#home{
 			display: block;
-			height: 100%;
 			width: 55%;
 			text-align: center;
 		}
 		#home span{
 			display: table-cell;
 			vertical-align: middle;
-			height: 91px;
+			height: 55px;
 			padding: 0 5px;			
 		}
 		#home img{
-			width: 100%;
-			max-height: 85px;
+			height: 100%;
+			border: 3px solid white;
 		}
 		#app-bar{
 			height: 100%;
@@ -49,20 +53,150 @@
 			position: absolute;
 			top: 0;
 			right: 0;
-			font-size: 4em;
-			line-height: 1.35em;
+			font-size: 3em;
 			color: #5D5D5D;	
 			text-align: center;
 			cursor: pointer;
+			line-height: 1.2em;
+		}
+		#main-list{
+			display: none;	
+		}
+		#main-list li{
+			list-style-type: none;
+		}
+		#main-list li a{
+			color: #fff;
+			text-decoration: none;
+			display: block;	
+			background: #5D5D5D;
+			padding: 0.5em 0 0.5em 1em;		
+		}
+		#main-list li ul a{
+			padding-left: 2em;
+			border-bottom: 1px solid #666;	
+		}
+		@media screen and (min-width: 16.5cm){ /* Targeting tablet devices */
+			#header{
+				background: red;
+			}
+		}
+		@media screen and (min-width: 24.5cm){
+			#header{
+				background: blue;
+			}	
+			#main-list{
+				display: block;
+				border: 1px dotted red;
+				text-align: right;
+				position: absolute;
+				right: 5px;
+				top: 25px;	
+			}
+			#main-list li{
+				display: inline-block;
+				width: auto;
+				position: relative;
+			}
+			#main-list li a{
+				color: #000;
+				background: #fff;
+				padding-right: 1em;
+			}
+			#main-list li ul{
+				position: absolute;
+				top: 45px;
+				left: 0;
+				width: auto;
+				white-space: nowrap;	
+			}
+			#app-bar{
+				display: none;	
+			}
 		}
 	</style>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>
+    <script>
+		$(document).ready(function(){
+			controller.operate();
+		});
+		var $ = jQuery.noConflict(true); //Instantiate jQuery to this parent script tag only
+		model = {
+			
+		}
+		view = {
+			hideSubMenu: function(){ //Automatically hide submenus for tidyness
+				$('#main-list ul').hide();	
+			},
+			handleAppMenu: function(){ //Shows and hides the app bar menu
+				$('#main-list').toggle(100, false,
+					function(){
+						$(this).animate({
+							width: 'auto'
+						}, 100);
+					}
+				);	 
+			},
+			handleSubAppMenu: function(el){	//Shows and hides the app bar submenus
+				el.children('ul:first').toggle(100, false, this.updateExpandCue(el));
+			},
+			updateExpandCue: function(el){ //Update the visual cue accordingly
+				var content = el.children('a').children('span.cue').text();				
+				if(content === '+') el.children('a').children('span.cue').text('-');
+				else el.children('a').children('span.cue').text('+');
+			}														
+		}
+		controller = {
+			operate: function(){
+				view.hideSubMenu();
+				this.appMenu();
+				this.subAppMenu();	
+			},
+			appMenu : function(){ //What happens when the user clicks the app-bar
+				$('#app-bar').on('click' , function(){
+					view.handleAppMenu();
+				});
+			},
+			subAppMenu: function(){ //What happens when the user clicks a sub-menu item
+				$('.expand').on('click', function(){
+					view.handleSubAppMenu($(this));
+				});
+			},
+		}		
+	</script>
 </head>
-
     <body>
         <div id='wrapper'>
             <div id='header'>
             	<a id='home' href='#'><span><img src='images/SuiteLifeLogoMobile.png' /></span></a>
             	<span id='app-bar' class='fontawesome-reorder'></span>
+                <ul id='main-list'>
+                	<li class='expand'><a href='#'>Real Estate <span class='cue'>+</span></a>
+                    	<ul>
+							<li><a href="#">Apartments for Rent</a></li>
+							<li><a href="#">Apartments for Sale</a></li>
+							<li><a href="#">List your property</a></li>	
+                        </ul>
+                    </li>
+                    <li><a href='#'>Neighborhoods</a></li>
+                    <li><a href='#'>Blogs</a></li>
+                    <li class='expand'><a href='#'>Services <span class='cue'>+</span></a>
+                    	<ul>
+							<li><a href="#">Relocation packages</a></li>
+							<li><a href="#">SL recommended services</a></li>
+                    	</ul>
+                    </li>
+                    <li class='expand'><a href='#'>About us <span class='cue'>+</span></a>
+                    	<ul>
+							<li><a href="#">Meet the company</a></li>
+							<li><a href="#">Meet Benny</a></li>
+							<li><a href="#">Internships</a></li>
+							<li><a href="#">Collaborate</a></li>   
+                         </ul>
+                    </li>
+                    <li><a href='#'>FAQ</a></li>
+                    <li><a href='#'>Contact</a></li>
+                </ul>
             </div>
             <div id='mainarea'></div>
             <div id='secondaryarea'></div>
