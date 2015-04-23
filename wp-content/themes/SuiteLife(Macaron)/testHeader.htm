@@ -81,7 +81,7 @@
 				background: red;
 			}
 		}
-		@media screen and (min-width: 24.5cm){
+		@media screen and (min-width: 26.5cm){
 			#header{
 				background: blue;
 			}	
@@ -113,6 +113,15 @@
 			#app-bar{
 				display: none;	
 			}
+			#main-list li ul#services{
+				left: -200px;	
+			}
+			#main-list li ul#aboutus{
+				left: -400px;	
+			}
+			#main-list li ul li a{
+				border: none;
+			}
 		}
 	</style>
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>
@@ -122,7 +131,38 @@
 		});
 		var $ = jQuery.noConflict(true); //Instantiate jQuery to this parent script tag only
 		model = {
-			
+			screenSize: 0,
+			smallScreen: function(){
+				
+			},
+			mediumScreen: function(){
+				
+			},
+			largeScreen: function(){
+				
+			},
+			pixels2Cm: function(){
+				var dpr = window.devicePixelRatio;
+				var dpi = dpr * 96;
+				var cm = 2.54;
+				return [cm, dpi, dpr];				
+			},
+			screenDetector: function(){ //Mimics CSS absolute measurement in cm
+				var viewportSize;
+				var dpr = window.devicePixelRatio;
+				var dpi = dpr * 96;
+				var cm = 2.54;
+				function result(){
+					viewportSize = $(this).width();
+					viewportWidth = (viewportSize/dpi) * cm;
+					model.screenSize = viewportWidth;
+					console.log(model.screenSize);
+				}
+				$(window).resize(function(){
+					result();
+				});
+				return result();
+			}			
 		}
 		view = {
 			hideSubMenu: function(){ //Automatically hide submenus for tidyness
@@ -150,7 +190,8 @@
 			operate: function(){
 				view.hideSubMenu();
 				this.appMenu();
-				this.subAppMenu();	
+				this.subAppMenu();
+				model.screenDetector();	
 			},
 			appMenu : function(){ //What happens when the user clicks the app-bar
 				$('#app-bar').on('click' , function(){
@@ -181,13 +222,13 @@
                     <li><a href='#'>Neighborhoods</a></li>
                     <li><a href='#'>Blogs</a></li>
                     <li class='expand'><a href='#'>Services <span class='cue'>+</span></a>
-                    	<ul>
+                    	<ul id='services'>
 							<li><a href="#">Relocation packages</a></li>
 							<li><a href="#">SL recommended services</a></li>
                     	</ul>
                     </li>
                     <li class='expand'><a href='#'>About us <span class='cue'>+</span></a>
-                    	<ul>
+                    	<ul id='aboutus'>
 							<li><a href="#">Meet the company</a></li>
 							<li><a href="#">Meet Benny</a></li>
 							<li><a href="#">Internships</a></li>
