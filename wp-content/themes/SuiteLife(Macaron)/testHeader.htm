@@ -25,7 +25,11 @@
 			height: 600px;
 			width: 100%;
 			min-width: 6.5cm;
-			background: #999;	
+			background: #999;
+		}
+		#mainarea{
+			background: #5D5D5D;
+			height: 200px;	
 		}
 		#header{
 			background: #fff;
@@ -78,16 +82,16 @@
 		}
 		@media screen and (min-width: 16.5cm){ /* Targeting tablet devices */
 			#header{
-				background: red;
+				/* background: red; */
 			}
 		}
 		@media screen and (min-width: 26.5cm){
 			#header{
-				background: blue;
+				/* background: blue; */
 			}	
 			#main-list{
 				display: block;
-				border: 1px dotted red;
+				/* border: 1px dotted red; */
 				text-align: right;
 				position: absolute;
 				right: 5px;
@@ -101,7 +105,7 @@
 			#main-list li a{
 				color: #000;
 				background: #fff;
-				padding-right: 1em;
+				padding-right: 1em;			
 			}
 			#main-list li ul{
 				position: absolute;
@@ -109,6 +113,11 @@
 				left: 0;
 				width: auto;
 				white-space: nowrap;	
+			}
+			#main-list li ul a{
+				background: #5D5D5D;
+				color: #fff;
+				border: 1px dotted #fff;				
 			}
 			#app-bar{
 				display: none;	
@@ -118,9 +127,6 @@
 			}
 			#main-list li ul#aboutus{
 				left: -400px;	
-			}
-			#main-list li ul li a{
-				border: none;
 			}
 		}
 	</style>
@@ -132,35 +138,36 @@
 		var $ = jQuery.noConflict(true); //Instantiate jQuery to this parent script tag only
 		model = {
 			screenSize: 0,
-			smallScreen: function(){
-				
+			smallScreen: function(){ //Returns true if the screen size is small
+				if(model.screenSize < 16.5)
+					return true;
 			},
-			mediumScreen: function(){
-				
+			mediumScreen: function(){ //Returns true if the screen size is medium
+				if(model.screenSize >= 16.5 && model.screenSize < 26.5)
+					return true;
 			},
-			largeScreen: function(){
-				
+			largeScreen: function(){ //Returns true if the screen size if large
+				if(model.screenSize >= 26.5)
+					return true;
 			},
 			pixels2Cm: function(){
 				var dpr = window.devicePixelRatio;
 				var dpi = dpr * 96;
 				var cm = 2.54;
-				return [cm, dpi, dpr];				
+				return {
+					cm: cm,
+					dpi: dpi, 
+					dpr: dpr
+				};			
 			},
 			screenDetector: function(){ //Mimics CSS absolute measurement in cm
-				var viewportSize;
-				var dpr = window.devicePixelRatio;
-				var dpi = dpr * 96;
-				var cm = 2.54;
+				var viewportSize, resolution;
+				resolution = this.pixels2Cm();
 				function result(){
 					viewportSize = $(this).width();
-					viewportWidth = (viewportSize/dpi) * cm;
+					viewportWidth = (viewportSize/resolution.dpi) * resolution.cm;
 					model.screenSize = viewportWidth;
-					console.log(model.screenSize);
 				}
-				$(window).resize(function(){
-					result();
-				});
 				return result();
 			}			
 		}
@@ -178,20 +185,40 @@
 				);	 
 			},
 			handleSubAppMenu: function(el){	//Shows and hides the app bar submenus
-				el.children('ul:first').toggle(100, false, this.updateExpandCue(el));
+				if(model.largeScreen())
+					this.collapseAllSub()
+				el.parent('li').children('ul:first').toggle(100, false, view.updateExpandCue(el));
 			},
 			updateExpandCue: function(el){ //Update the visual cue accordingly
-				var content = el.children('a').children('span.cue').text();				
-				if(content === '+') el.children('a').children('span.cue').text('-');
-				else el.children('a').children('span.cue').text('+');
-			}														
+				var content = el.children('span.cue').text();
+				if(content === '+') el.children('span.cue').text('-');
+				else el.children('span.cue').text('+');
+			},
+			collapseAllSub: function(){
+				var cue, cueText;
+				cue = $('.expand span.cue');
+				cueText = cue.text();
+				/*
+				console.log(typeof cue);
+				console.log(cue);
+				console.log(cue[0].value);
+				*/
+				console.log(cueText);			
+				for(i = 0; i < cue.length; i++){
+					console.log('partial: ' + cueText.substring(i, i + 1));
+					if(cueText.substring(i, i + 1) == '-'){ //If the cue is already collapsed
+						console.log('Collapse');
+						$('.expand span.cue:eq('+ i +')').css({'background':'#000'});
+					}
+				}		
+			},
 		}
 		controller = {
 			operate: function(){
 				view.hideSubMenu();
 				this.appMenu();
 				this.subAppMenu();
-				model.screenDetector();	
+				this.screenReport();	
 			},
 			appMenu : function(){ //What happens when the user clicks the app-bar
 				$('#app-bar').on('click' , function(){
@@ -203,6 +230,12 @@
 					view.handleSubAppMenu($(this));
 				});
 			},
+			screenReport: function(){ //Asks a screen report each time the screen size changes
+				model.screenDetector(); //But read the screen initial size when the page is loaded
+				$(window).resize(function(){
+					model.screenDetector();	
+				});				
+			}
 		}		
 	</script>
 </head>
@@ -212,7 +245,7 @@
             	<a id='home' href='#'><span><img src='images/SuiteLifeLogoMobile.png' /></span></a>
             	<span id='app-bar' class='fontawesome-reorder'></span>
                 <ul id='main-list'>
-                	<li class='expand'><a href='#'>Real Estate <span class='cue'>+</span></a>
+                	<li><a href='#' class='expand'>Real Estate <span class='cue'>+</span></a>
                     	<ul>
 							<li><a href="#">Apartments for Rent</a></li>
 							<li><a href="#">Apartments for Sale</a></li>
@@ -221,13 +254,13 @@
                     </li>
                     <li><a href='#'>Neighborhoods</a></li>
                     <li><a href='#'>Blogs</a></li>
-                    <li class='expand'><a href='#'>Services <span class='cue'>+</span></a>
+                    <li><a href='#' class='expand'>Services <span class='cue'>+</span></a>
                     	<ul id='services'>
 							<li><a href="#">Relocation packages</a></li>
 							<li><a href="#">SL recommended services</a></li>
                     	</ul>
                     </li>
-                    <li class='expand'><a href='#'>About us <span class='cue'>+</span></a>
+                    <li><a href='#' class='expand'>About us <span class='cue'>+</span></a>
                     	<ul id='aboutus'>
 							<li><a href="#">Meet the company</a></li>
 							<li><a href="#">Meet Benny</a></li>
