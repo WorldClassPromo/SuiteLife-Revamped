@@ -171,8 +171,14 @@
 			}			
 		}
 		view = {
-			hideSubMenu: function(){ //Automatically hide submenus for tidyness
+			hideMenu: function(){ //Automatically hide submenus for tidyness
 				$('#main-list ul').hide();	
+			},
+			showMenu: function(){ //Appropriate menu before for dynamic screen resizing
+				if(model.largeScreen()){
+					$('#main-list').show();
+					view.resetSubAppMenus();
+				}
 			},
 			handleAppMenu: function(){ //Shows and hides the app bar menu
 				$('#main-list').toggle(100, false,
@@ -186,15 +192,17 @@
 			handleSubAppMenu: function(el){	//Shows and hides the app bar submenus	
 				el.parent('li').children('ul:first').toggle(100, false, view.updateExpandCue(el));
 				if(model.largeScreen()){
-					$('.sub-menu').hide(); //Hide all sub menu items
-					this.specifyCue($('.cue'), '+'); //Update all cues to their hidden state
+					this.resetSubAppMenus();
 					el.parent('li').children('ul:first').show(); //Expand the sub menu the user has clicked on
 					this.specifyCue(el.parent('li').children('a').children('.cue'), '-'); //Update the cue to its expanded state
 				}
 			},
+			resetSubAppMenus: function(){ //Reset all sub menu items
+				$('.sub-menu').hide(); //Hide all sub menu items
+				this.specifyCue($('.cue'), '+'); //Update all cues to their hidden state				
+			},
 			hideSubAppMenu: function(el){
 				el.parent('li').children('ul:first').hide(100, view.updateExpandCue(el.parent('li').children('a')));
-				
 			},
 			updateExpandCue: function(el){ //Update the visual cue accordingly
 				var content = el.children('span.cue').text();
@@ -207,7 +215,8 @@
 		}
 		controller = {
 			operate: function(){
-				view.hideSubMenu();
+				view.hideMenu();
+				this.persistantMenu();
 				this.appMenu();
 				this.subAppMenu();
 				this.screenReport();	
@@ -220,11 +229,6 @@
 			subAppMenu: function(){ //What happens when the user clicks a sub-menu item
 				$('.expand').on('click', function(){
 					view.handleSubAppMenu($(this));
-					/* if(model.largeScreen()){
-						$(this).parent('li').children('ul:first').on('mouseout', function(){
-							view.hideSubAppMenu($(this));
-						});				
-					} */
 				});
 			},
 			screenReport: function(){ //Asks a screen report each time the screen size changes
@@ -232,6 +236,11 @@
 				$(window).resize(function(){
 					model.screenDetector();	
 				});				
+			},
+			persistantMenu: function(){ //Makes sure the menu always show on large screens
+				$(window).resize(function(){
+					view.showMenu();	
+				});
 			}
 		}		
 	</script>
