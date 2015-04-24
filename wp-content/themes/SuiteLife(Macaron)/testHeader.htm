@@ -109,15 +109,14 @@
 			}
 			#main-list li ul{
 				position: absolute;
-				top: 45px;
+				top: 40px;
 				left: 0;
 				width: auto;
 				white-space: nowrap;	
 			}
 			#main-list li ul a{
 				background: #5D5D5D;
-				color: #fff;
-				border: 1px dotted #fff;				
+				color: #fff;				
 			}
 			#app-bar{
 				display: none;	
@@ -186,14 +185,24 @@
 			},
 			handleSubAppMenu: function(el){	//Shows and hides the app bar submenus	
 				el.parent('li').children('ul:first').toggle(100, false, view.updateExpandCue(el));
+				if(model.largeScreen()){
+					$('.sub-menu').hide(); //Hide all sub menu items
+					this.specifyCue($('.cue'), '+'); //Update all cues to their hidden state
+					el.parent('li').children('ul:first').show(); //Expand the sub menu the user has clicked on
+					this.specifyCue(el.parent('li').children('a').children('.cue'), '-'); //Update the cue to its expanded state
+				}
 			},
 			hideSubAppMenu: function(el){
 				el.parent('li').children('ul:first').hide(100, view.updateExpandCue(el.parent('li').children('a')));
+				
 			},
 			updateExpandCue: function(el){ //Update the visual cue accordingly
 				var content = el.children('span.cue').text();
 				if(content === '+') el.children('span.cue').text('-');
 				else el.children('span.cue').text('+');
+			},
+			specifyCue: function(cue, value){
+				cue.text(value);
 			}
 		}
 		controller = {
@@ -211,11 +220,11 @@
 			subAppMenu: function(){ //What happens when the user clicks a sub-menu item
 				$('.expand').on('click', function(){
 					view.handleSubAppMenu($(this));
-					if(model.largeScreen()){
+					/* if(model.largeScreen()){
 						$(this).parent('li').children('ul:first').on('mouseout', function(){
 							view.hideSubAppMenu($(this));
-						});
-					}	
+						});				
+					} */
 				});
 			},
 			screenReport: function(){ //Asks a screen report each time the screen size changes
@@ -234,7 +243,7 @@
             	<span id='app-bar' class='fontawesome-reorder'></span>
                 <ul id='main-list'>
                 	<li><a href='#' class='expand'>Real Estate <span class='cue'>+</span></a>
-                    	<ul>
+                    	<ul class='sub-menu'>
 							<li><a href="#">Apartments for Rent</a></li>
 							<li><a href="#">Apartments for Sale</a></li>
 							<li><a href="#">List your property</a></li>	
@@ -243,13 +252,13 @@
                     <li><a href='#'>Neighborhoods</a></li>
                     <li><a href='#'>Blogs</a></li>
                     <li><a href='#' class='expand'>Services <span class='cue'>+</span></a>
-                    	<ul id='services'>
+                    	<ul id='services' class='sub-menu'>
 							<li><a href="#">Relocation packages</a></li>
 							<li><a href="#">SL recommended services</a></li>
                     	</ul>
                     </li>
                     <li><a href='#' class='expand'>About us <span class='cue'>+</span></a>
-                    	<ul id='aboutus'>
+                    	<ul id='aboutus' class='sub-menu'>
 							<li><a href="#">Meet the company</a></li>
 							<li><a href="#">Meet Benny</a></li>
 							<li><a href="#">Internships</a></li>
