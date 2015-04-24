@@ -184,34 +184,17 @@
 					}
 				);	 
 			},
-			handleSubAppMenu: function(el){	//Shows and hides the app bar submenus
-				if(model.largeScreen())
-					this.collapseAllSub()
+			handleSubAppMenu: function(el){	//Shows and hides the app bar submenus	
 				el.parent('li').children('ul:first').toggle(100, false, view.updateExpandCue(el));
+			},
+			hideSubAppMenu: function(el){
+				el.parent('li').children('ul:first').hide(100, view.updateExpandCue(el.parent('li').children('a')));
 			},
 			updateExpandCue: function(el){ //Update the visual cue accordingly
 				var content = el.children('span.cue').text();
 				if(content === '+') el.children('span.cue').text('-');
 				else el.children('span.cue').text('+');
-			},
-			collapseAllSub: function(){
-				var cue, cueText;
-				cue = $('.expand span.cue');
-				cueText = cue.text();
-				/*
-				console.log(typeof cue);
-				console.log(cue);
-				console.log(cue[0].value);
-				*/
-				console.log(cueText);			
-				for(i = 0; i < cue.length; i++){
-					console.log('partial: ' + cueText.substring(i, i + 1));
-					if(cueText.substring(i, i + 1) == '-'){ //If the cue is already collapsed
-						console.log('Collapse');
-						$('.expand span.cue:eq('+ i +')').css({'background':'#000'});
-					}
-				}		
-			},
+			}
 		}
 		controller = {
 			operate: function(){
@@ -228,6 +211,11 @@
 			subAppMenu: function(){ //What happens when the user clicks a sub-menu item
 				$('.expand').on('click', function(){
 					view.handleSubAppMenu($(this));
+					if(model.largeScreen()){
+						$(this).parent('li').children('ul:first').on('mouseout', function(){
+							view.hideSubAppMenu($(this));
+						});
+					}	
 				});
 			},
 			screenReport: function(){ //Asks a screen report each time the screen size changes
