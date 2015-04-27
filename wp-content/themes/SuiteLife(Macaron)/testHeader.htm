@@ -63,6 +63,14 @@
 			cursor: pointer;
 			line-height: 1.2em;
 		}
+		.turnGrey{
+			background: #5D5D5D !important;
+			color: #fff !important;	
+		}
+		.turnWhite{
+			background: #fff !important;
+			color: #5D5D5D !important;
+		}
 		#main-list{
 			display: none;	
 		}
@@ -95,7 +103,8 @@
 				text-align: right;
 				position: absolute;
 				right: 5px;
-				top: 25px;	
+				/* top: 26px; */
+				bottom: 0;	
 			}
 			#main-list li{
 				display: inline-block;
@@ -104,8 +113,11 @@
 			}
 			#main-list li a{
 				color: #000;
-				background: #fff;
-				padding-right: 1em;			
+				padding-right: 1em;
+				background: #fff;						
+			}
+			.list-cue{
+				background: #fff url('images/triangle.gif') no-repeat center bottom !important;				
 			}
 			#main-list li ul{
 				position: absolute;
@@ -175,31 +187,48 @@
 				$('#main-list ul').hide();	
 			},
 			showMenu: function(){ //Appropriate menu before for dynamic screen resizing
-				if(model.largeScreen()){
-					$('#main-list').show();
-					view.resetSubAppMenus();
+				if(model.largeScreen()){ //When on large screens
+					$('#main-list').show(); //Always show the menu
+					view.resetSubAppMenus(); //and reset sub-menus
+				}
+				if(model.mediumScreen() || model.smallScreen()){ //When on other screens
+					$('#main-list').hide(); //Always hide the main menu
+					view.swapAppMenuColor(); // update the app-menu color accordingly
 				}
 			},
 			handleAppMenu: function(){ //Shows and hides the app bar menu
 				$('#main-list').toggle(100, false,
 					function(){
 						$(this).animate({
-							width: 'auto'
+							width: 'auto',
 						}, 100);
+						view.swapAppMenuColor();
 					}
-				);	 
+				);
+			},
+			swapAppMenuColor: function(){ //Swaps the colors of the #app-bar button
+				if($('#app-bar').is('.turnGrey') && !($('#main-list').is(':visible'))){
+					$('#app-bar').addClass('turnWhite');
+					$('#app-bar').removeClass('turnGrey');
+				}
+				else if($('#main-list').is(':visible')){
+					$('#app-bar').addClass('turnGrey');
+					$('#app-bar').removeClass('turnWhite');			
+				}				
 			},
 			handleSubAppMenu: function(el){	//Shows and hides the app bar submenus	
 				el.parent('li').children('ul:first').toggle(100, false, view.updateExpandCue(el));
 				if(model.largeScreen()){
-					this.resetSubAppMenus();
+					this.resetSubAppMenus(el);
 					el.parent('li').children('ul:first').show(); //Expand the sub menu the user has clicked on
 					this.specifyCue(el.parent('li').children('a').children('.cue'), '-'); //Update the cue to its expanded state
+					el.parent('li').children('a').attr('class', 'list-cue');
 				}
 			},
-			resetSubAppMenus: function(){ //Reset all sub menu items
+			resetSubAppMenus: function(el){ //Reset all sub menu items
 				$('.sub-menu').hide(); //Hide all sub menu items
-				this.specifyCue($('.cue'), '+'); //Update all cues to their hidden state				
+				this.specifyCue($('.cue'), '+'); //Update all cues to their hidden state
+				$('.sub-menu').parent('li').children('a').removeClass('list-cue');
 			},
 			hideSubAppMenu: function(el){
 				el.parent('li').children('ul:first').hide(100, view.updateExpandCue(el.parent('li').children('a')));
