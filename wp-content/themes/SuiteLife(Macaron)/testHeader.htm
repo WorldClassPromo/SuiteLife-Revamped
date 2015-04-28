@@ -25,11 +25,7 @@
 			height: 900px; /* Just for testing */
 			width: 100%;
 			min-width: 6.5cm;
-			background: #999;
-		}
-		#mainarea{
-			background: #5D5D5D url(images/background.jpg) no-repeat center center;	
-			height: 400px;
+			background: #5D5D5D;
 		}
 		#header{
 			background: #fff;
@@ -72,21 +68,42 @@
 			color: #5D5D5D !important;
 		}
 		#main-list{
-			display: none;	
+			display: none;
+			position: relative;
+			top: -1px;
+			background: #5D5D5D;	
 		}
 		#main-list li{
 			list-style-type: none;
+			border: none;
 		}
 		#main-list li a{
 			color: #fff;
 			text-decoration: none;
 			display: block;	
 			background: #5D5D5D;
-			padding: 0.5em 0 0.5em 1em;		
+			padding: 0.5em 0 0.5em 1em;	
+			height: 23px;			
 		}
+		#main-list li a:hover{
+			color: #ff9;
+		}		
 		#main-list li ul a{
 			padding-left: 2em;
 			border-bottom: 1px solid #666;	
+		}
+		#mainarea{	
+			background-size: 100%;
+			height: 400px;
+		}
+		.small-bg{
+			background: #5D5D5D url(images/background_small.jpg) no-repeat top left;			
+		}
+		.medium-bg{
+			background: #5D5D5D url(images/background_medium.jpg) no-repeat top left;			
+		}
+		.large-bg{
+			background: #5D5D5D url(images/background_large.jpg) no-repeat center center;			
 		}
 		@media screen and (min-width: 16.5cm){ /* Targeting tablet devices */
 			#header{
@@ -100,11 +117,13 @@
 			#main-list{
 				display: block;
 				/* border: 1px dotted red; */
+				top: 26px;
 				text-align: right;
 				position: absolute;
 				right: 5px;
 				/* top: 26px; */
 				bottom: 0;	
+				background: #fff;
 			}
 			#main-list li{
 				display: inline-block;
@@ -114,21 +133,30 @@
 			#main-list li a{
 				color: #000;
 				padding-right: 1em;
-				background: #fff;						
+				background: #fff;
+				border: none;						
+			}
+			#main-list li a:hover{
+				color: red;
+			}	
+			#main-list ul li a:hover{
+				color: #ff9;	
 			}
 			.list-cue{
 				background: #fff url('images/triangle.gif') no-repeat center bottom !important;				
 			}
 			#main-list li ul{
-				position: absolute;
-				top: 40px;
-				left: 0;
 				width: auto;
+				position: absolute;
+				top: 39px;
+				left: 0;
 				white-space: nowrap;	
+				background: #5D5D5D;
 			}
 			#main-list li ul a{
 				background: #5D5D5D;
-				color: #fff;				
+				color: #fff;
+				border: none;				
 			}
 			#app-bar{
 				display: none;	
@@ -139,6 +167,9 @@
 			#main-list li ul#aboutus{
 				left: -400px;	
 			}
+			#mainarea{
+				margin-top: 39px;
+			}			
 		}
 	</style>
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>
@@ -178,6 +209,10 @@
 					viewportSize = $(this).width();
 					viewportWidth = (viewportSize/resolution.dpi) * resolution.cm;
 					model.screenSize = viewportWidth;
+					$('#test1').val(model.screenSize);
+					$('#test2').val(resolution);
+					$('#test3').val(viewportSize);	
+					$('#test4').val(viewportWidth);				
 				}
 				return result();
 			}			
@@ -240,15 +275,26 @@
 			},
 			specifyCue: function(cue, value){
 				cue.text(value);
-			}
+			},
+			imageResizer: function(){ //Resizes all images based on the screen size
+				if(model.smallScreen()){
+					$('#mainarea').attr('class', 'small-bg');
+				}
+				if(model.mediumScreen()){
+					$('#mainarea').attr('class', 'medium-bg');
+				}
+				if(model.largeScreen()){
+					$('#mainarea').attr('class', 'large-bg');
+				}
+			},
 		}
 		controller = {
 			operate: function(){
 				view.hideMenu();
-				this.persistantMenu();
 				this.appMenu();
 				this.subAppMenu();
-				this.screenReport();	
+				this.screenReport();
+				view.imageResizer();	
 			},
 			appMenu : function(){ //What happens when the user clicks the app-bar
 				$('#app-bar').on('click' , function(){
@@ -262,14 +308,11 @@
 			},
 			screenReport: function(){ //Asks a screen report each time the screen size changes
 				model.screenDetector(); //But read the screen initial size when the page is loaded
-				$(window).resize(function(){
-					model.screenDetector();	
+				$(window).on('resize', function(){
+					model.screenDetector();	//Detects screen size
+					view.showMenu(); //Show the menu differently on large screens
+					view.imageResizer(); //Resize all images based on screen size
 				});				
-			},
-			persistantMenu: function(){ //Makes sure the menu always show on large screens
-				$(window).resize(function(){
-					view.showMenu();	
-				});
 			}
 		}		
 	</script>
@@ -310,6 +353,12 @@
             <div id='mainarea'></div>
             <div id='secondaryarea'></div>
             <div id='footer'></div>
+            <fieldset style='text-align:right; width: 300px;'>
+            <label>Result: </label><input type='text' id='test1' /><br />
+            <label>Resolution: </label><input type='text' id='test2' /><br />
+            <label>Viewport Size: </label><input type='text' id='test3' /><br />
+            <label>Viewport Width: </label><input type='text' id='test4' />
+            </fieldset>
         </div>
     </body>
 </html>
