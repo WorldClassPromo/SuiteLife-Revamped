@@ -194,6 +194,9 @@
 			},
 			pixels2Cm: function(){
 				var dpr = window.devicePixelRatio;
+				if(!dpr){ //If the browser doesn't support this, assume the screen as old, thus...
+					dpr = 1;	
+				}
 				var dpi = dpr * 96;
 				var cm = 2.54;
 				return {
@@ -208,11 +211,7 @@
 				function result(){
 					viewportSize = $(this).width();
 					viewportWidth = (viewportSize/resolution.dpi) * resolution.cm;
-					model.screenSize = viewportWidth;
-					$('#test1').val(model.screenSize);
-					$('#test2').val(resolution);
-					$('#test3').val(viewportSize);	
-					$('#test4').val(viewportWidth);				
+					model.screenSize = viewportWidth;			
 				}
 				return result();
 			}			
@@ -353,12 +352,6 @@
             <div id='mainarea'></div>
             <div id='secondaryarea'></div>
             <div id='footer'></div>
-            <fieldset style='text-align:right; width: 300px;'>
-            <label>Result: </label><input type='text' id='test1' /><br />
-            <label>Resolution: </label><input type='text' id='test2' /><br />
-            <label>Viewport Size: </label><input type='text' id='test3' /><br />
-            <label>Viewport Width: </label><input type='text' id='test4' />
-            </fieldset>
         </div>
     </body>
 </html>
