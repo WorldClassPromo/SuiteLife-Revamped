@@ -29,8 +29,12 @@
 		}
 		#header{
 			background: #fff;
-			position: relative;
+			position: fixed;
+			z-index: 1000;
 			height: 65px;
+			width: 100%;
+			top: 0;
+			left: 0;
 		}
 		#home{
 			display: block;
@@ -70,8 +74,10 @@
 		#main-list{
 			display: none;
 			position: relative;
+			height: 320px;
 			top: -1px;
-			background: #5D5D5D;	
+			background: #5D5D5D;
+			overflow: auto;
 		}
 		#main-list li{
 			list-style-type: none;
@@ -95,6 +101,56 @@
 		#mainarea{	
 			background-size: 100%;
 			height: 400px;
+			margin-top: 64px;
+		}
+		#find-your-place{
+			background: #6BBCB4;
+			background: rgba(107, 188, 180, 0.6);
+			font-size: 2em;
+			color: #fff;
+			text-align: center;	
+			padding-bottom: 16px;
+			border: none;
+			padding-top: 34px;	
+		}
+		#find-your-place legend{
+			font-weight: bold;
+			text-transform: uppercase;
+			position: relative;
+			margin: 0 auto;
+			width: 100%;
+			top: 26px;
+		}
+		#find-your-place label{
+			font-weight: 300;
+			border: 1px dotted white;
+			width: 47.5%;
+			height: 60px;
+			display: inline-block;
+			position: relative;
+			top: 10px;
+		}
+		#rent-label,
+		#buy-label{
+				
+		}		
+		#find-your-place input,
+		#find-your-place select{
+			border: none;
+			height: 34px;
+			padding: 4px;
+			color: #5D5D5D;
+			margin-bottom: 10px;
+		}		
+		#find-your-place #apart-search{
+			display: inline-block;
+			width: 94%;
+		}
+		#find-your-place select,
+		#find-your-place #submit-apart-search{
+			width: 47%;
+			height: 38px;
+			margin: 10px 0;	
 		}
 		.small-bg{
 			background: #5D5D5D url(images/background_small.jpg) no-repeat top left;			
@@ -116,14 +172,14 @@
 			}	
 			#main-list{
 				display: block;
-				/* border: 1px dotted red; */
 				top: 26px;
 				text-align: right;
 				position: absolute;
 				right: 5px;
-				/* top: 26px; */
 				bottom: 0;	
 				background: #fff;
+				height: auto;
+				overflow: visible;
 			}
 			#main-list li{
 				display: inline-block;
@@ -168,7 +224,7 @@
 				left: -400px;	
 			}
 			#mainarea{
-				margin-top: 39px;
+				margin-top: 105px;
 			}			
 		}
 	</style>
@@ -194,7 +250,7 @@
 			},
 			pixels2Cm: function(){
 				var dpr = window.devicePixelRatio;
-				if(!dpr){ //If the browser doesn't support this, assume the screen as old, thus...
+				if(!dpr){
 					dpr = 1;	
 				}
 				var dpi = dpr * 96;
@@ -233,10 +289,11 @@
 			handleAppMenu: function(){ //Shows and hides the app bar menu
 				$('#main-list').toggle(100, false,
 					function(){
-						$(this).animate({
-							width: 'auto',
+						$(this).animate({							
+							width: 'auto'
 						}, 100);
 						view.swapAppMenuColor();
+						$(this).css({'z-index':'1000'});
 					}
 				);
 			},
@@ -286,6 +343,17 @@
 					$('#mainarea').attr('class', 'large-bg');
 				}
 			},
+			fullHeightMenu: function(){
+				if(model.smallScreen() || model.mediumScreen()){
+					var viewportHeight = $(window).height();
+					var headerHeight = $('#header').height();
+					var menuHeight = viewportHeight - headerHeight;
+					$('#main-list').css({'height': menuHeight});
+				}
+				else{
+					$('#main-list').css({'height': 'auto'});
+				}
+			}
 		}
 		controller = {
 			operate: function(){
@@ -305,12 +373,17 @@
 					view.handleSubAppMenu($(this));
 				});
 			},
+			initialReport: function(){ //Read these methods once before the resize event
+				model.screenDetector(); //Read the screen initial size when the page is loaded
+				view.fullHeightMenu(); //Calculate the menu height when the page is loaded		
+			},
 			screenReport: function(){ //Asks a screen report each time the screen size changes
-				model.screenDetector(); //But read the screen initial size when the page is loaded
+				this.initialReport();
 				$(window).on('resize', function(){
 					model.screenDetector();	//Detects screen size
 					view.showMenu(); //Show the menu differently on large screens
 					view.imageResizer(); //Resize all images based on screen size
+					view.fullHeightMenu(); //Make sure the menu is alway the full size of the scrren
 				});				
 			}
 		}		
@@ -349,7 +422,42 @@
                     <li><a href='#'>Contact</a></li>
                 </ul>
             </div>
-            <div id='mainarea'></div>
+            <div id='mainarea'>
+            	<fieldset id='find-your-place'>
+                	<legend>Find your new place</legend>
+                    <label id='rent-label'>Rent</label><label id='buy-label'>Buy</label>
+                    <input type='search' name='apart-search' id='apart-search' /> 
+                    <select>
+                    	<option>Bedroom</option>
+                    	<option>All</option>
+                        <option>Studio</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5+</option>
+                    </select>
+                    <select>
+                    	<option>Bathrooms</option>
+                    	<option>All</option>
+                        <option>Studio</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4+</option>
+                    </select>  
+                    <select>
+                    	<option>Price Range</option>
+                    	<option>All</option>
+                        <option>Under 700 &#8364;</option>
+                        <option>800&#8364; - 1000&#8364;</option>
+                        <option>1000&#8364; - 1500&#8364;</option>
+                        <option>1500&#8364; & Up</option>
+                        <option>Over 2000&#8364;</option>
+                    </select>
+                    <input type='submit' id='submit-apart-search' value='search' />     
+                </fieldset>
+            </div>
             <div id='secondaryarea'></div>
             <div id='footer'></div>
         </div>
